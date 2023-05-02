@@ -15,7 +15,7 @@
         }
     </style>
 
-    <title>Submit Assignment</title>
+    <title>Evaluation</title>
 
 </head>
 <body style="background-color:#f0f8ff;">
@@ -34,43 +34,28 @@
 
 
 
-<p style="padding-left:20px; padding-right:50%"><b> Submit Assignment</b></p>
+<p style="padding-left:20px; padding-right:50%"><b> {{ assignment_obj.assignment_name }} Evaluation of {{ form_instance.student_name }}</b></p>
 
 
 </div>
 </div>
 <br>
-<form action="../{{ url }}/" method="POST" enctype="multipart/form-data" >
+<form action="../{{ url }}" method="POST" enctype="multipart/form-data" >
 
       <div class=" bg-white rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10 shadow-md">
 
          {% csrf_token %}
-
             <div class="relative mb-4 form-group">
-                <label for="Student Name" class="leading-7 required-field text-Black-600">Name</label><br>
-                    {% comment %} {{ form.student_name }} {% endcomment %}
-                    {{ user.first_name }}
+                <label for="Marks" class="leading-7 required-field text-Black-600">Marks (Out of {{ assignment_obj.max_marks }})</label><br>
+                <input id = "sone1" type="number" name="Marks" value="{{ form.marks }}" class="form-control">
             </div>
 
             <div class="relative mb-4 form-group">
-                <label for="Roll Number" class="leading-7 text-Black-600 readonly">Roll Number</label><br>
-                    {{ user.last_name }}
+                <label for="Feedback" class="leading-7 text-Black-600">Feedback</label><br>
+                <textarea id = "sone2" name="Feedback" value="{{ form.feedback }}" class="form-control"></textarea>
             </div>
 
-            <div class="relative mb-4 form-group">
-                <label for="Assignment Name" class="leading-7 text-Black-600 readonly">Assignment Name</label><br>
-                    {{ name_assignment }}
-            </div>
-
-            <div class="relative mb-4 form-group">
-                <label for="Upload Submission File" class="leading-7 text-Black-600">Upload Submission File</label>
-                <svg width="872" height="4" viewBox="0 0 872 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="0.998611" y1="2.91944" x2="871.995" y2="0.5" stroke="#E9E9EB"/>
-                </svg>
-                {{ form.submission_file }}
-            </div>
-
-            <input  id="but2" type="submit" class="btn btn-primary btn-lg text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text" style="max-width:30%;"{% if locked %}disabled{% endif %} value="Submit">
+            <input  id="but3" type="submit" class="btn btn-primary btn-lg text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text" style="max-width:30%;"{% if locked %}disabled{% endif %} value="Submit">
 
   </div>
 </div>
@@ -83,10 +68,9 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script scr="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
-{% comment %} <script>
-    $('#stud_name').val("{{ user.first_name }}");
-    $('#roll_num').val("{{ user.last_name }}");
-    $('#sa').val("{{ name_assignment }}");
-</script>  {% endcomment %}
+<script>
+    $('#mks').val(21);
+    $('#fb').val("pls");
+</script> 
 </body>
 </html>

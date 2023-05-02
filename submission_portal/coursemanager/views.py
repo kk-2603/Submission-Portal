@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import SiteUser, Assignment, SubmittedAssignment
 from django.http import HttpResponseForbidden, FileResponse
-from .forms import AssignmentForm, SubmissionForm
+from .forms import AssignmentForm, SubmissionForm, EvaluationForm
 from django import template
 from django.db.models import Q
 
@@ -17,29 +17,31 @@ def index(request):
     else:
         assignments = Assignment.objects.all()
         submissions = SubmittedAssignment.objects.filter(Q(student_name = user.user.first_name))
-        print(user.user.first_name)
-        # print(student__user)
         submitted_array = []
         graded_array = []
         marks_array = []
         total_marks_array = []
+        feedbacks_array = []
         for assignment in assignments:
             flag = False
             flag_graded = False
             marks = 0
+            feedback = ""
             for submission in submissions:
                 if submission.submitted_assignment_name == assignment.assignment_name:
                     flag = True
                     flag_graded = submission.is_graded
                     marks = submission.marks
+                    feedback = submission.feedback
                     break
             
             submitted_array.append(flag)
             graded_array.append(flag_graded)
             marks_array.append(marks)
             total_marks_array.append(assignment.max_marks)
+            feedbacks_array.append(feedback)
 
-        my_list = zip(assignments, submitted_array, graded_array, marks_array, total_marks_array)
+        my_list = zip(assignments, submitted_array, graded_array, marks_array, total_marks_array, feedbacks_array)
 
         context = { "my_list": my_list }
         return render(request, 'student_index.html', context)
@@ -131,6 +133,44 @@ def SubmitAssignment(request,pk):
 
         return render(request, 'submission.html', {'form': form, 'name_assignment': assignment.assignment_name, 'url': str(pk)})
     
+
+
+@login_required(login_url='/accounts/login/') 
+def SubmissionsView(request, pk):
+    user, created = SiteUser.objects.get_or_create(user_id=request.user.id)
+    if request.user.is_staff:
+        assignment_object = Assignment.objects.get(pk=pk)
+        submissions_objects = SubmittedAssignment.objects.filter(Q(submitted_assignment_name = assignment_object.assignment_name))
+        return render(request, 'submissions_view.html', { 'submission_objects': submissions_objects, 'assignment_object': assignment_object })
+    else:
+        return HttpResponseForbidden()
+    
+
+@login_required(login_url='/accounts/login/') 
+def EvaluateAssignment(request, pk1, pk2):
+    user, created = SiteUser.objects.get_or_create(user_id=request.user.id)
+    if request.user.is_staff:
+        assignment_obj = Assignment.objects.get(pk=pk1)
+        form_instance = SubmittedAssignment.objects.get(pk=pk2)
+        request.session['id'] = form_instance.id
+        if request.method == 'POST':
+            form = EvaluationForm(request.POST, request.FILES, instance=form_instance)
+            print(form)
+            if form.is_valid():
+                submission_obj = form.save(commit=False)
+                submission_obj.student = SiteUser.objects.get(pk=pk2)
+                submission_obj.is_graded = True
+                submission_obj.save()
+                return redirect('coursemanager:home')
+            else:
+                print(form.errors)
+        else:
+            form = SubmissionForm(instance=form_instance)
+
+        return render(request, 'evaluation.html', {'assignment_obj': assignment_obj, 'form_instance': form_instance, 'form': form, 'url': str(pk1)+"/"+str(pk2)})
+    else:
+       return HttpResponseForbidden() 
+
 
 @login_required(login_url='/accounts/login/')
 def MediaView(request, file):

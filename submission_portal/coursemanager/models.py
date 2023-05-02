@@ -28,11 +28,14 @@ class Assignment(models.Model):
     assignment_file = models.FileField('Assignment File', upload_to=assignment_upload_file_name, storage=OverwriteStorage(), null=True, blank=True)
     created_time = models.DateTimeField('Created Time', default=datetime.datetime.now, null=True, blank=True)
 
+    def assignment_file_url(self):
+        return 'assignments/{0}'.format(self.assignment_file)
+
 class SubmittedAssignment(models.Model):
     student = models.ForeignKey(SiteUser, on_delete=models.CASCADE, null=True)
     student_name = models.CharField('Student Name', max_length=256, null=True, blank=True)
     roll_number = models.CharField('Roll Number', max_length=256, null=True, blank=True)
-    submission_file = models.FileField('Assignment File', upload_to=submission_upload_file_name, storage=OverwriteStorage(), null=True, blank=True)
+    submission_file = models.FileField('Submission File', upload_to=submission_upload_file_name, storage=OverwriteStorage(), null=True, blank=True)
     submitted_assignment_name = models.CharField('Submitted To', max_length=256, null=True, blank=True)
     submitted_assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=True, blank=True)
     is_graded = models.BooleanField(default=False)

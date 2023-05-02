@@ -63,3 +63,24 @@ class SubmissionForm(ModelForm):
                 'id': 'sa'
                 }),
         }
+
+
+class EvaluationForm(ModelForm):
+    class Meta:
+        model = SubmittedAssignment
+        fields = [
+            'marks',
+            'feedback',
+        ]
+
+        widgets = {
+            'marks': NumberInput(attrs={
+                'class': "form-control",
+                'id': 'mks'
+                }),
+
+            'feedback': TextInput(attrs={
+                'class': "form-control",
+                'id': 'fb'
+                }),
+        }

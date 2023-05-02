@@ -1,0 +1,58 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+    {% load socialaccount %}
+<head>
+    <meta charset="UTF-8">
+    <title>View Submissions</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'hab_portal/styles.css' %}"> {% endcomment %}
+    <script src="{% static 'jquery-3.4.1.min.js' %}"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div>Logged in as {{ user.email }} with Roll number as {{ user.last_name }}</div>
+    <a href="accounts/logout">Log Out</a>
+    <div>List of all Submissions for {{ assignment_object.assignment_name }}:</div>
+    <table class="table-auto w-full text-left whitespace-no-wrap">
+        <tbody>
+            <tr>
+                <th width="15%" class="px-4 py-3 title-font  font-medium text-gray-900  bg-gray-100">Student Name</th>
+                <th width="15%" class="px-4 py-3 title-font  font-medium text-gray-900  bg-gray-100">Submitted File</th>
+                <th width="10%" class="px-4 py-3 title-font  font-medium text-gray-900  bg-gray-100">Submission Time</th>
+                <th width="20%" class="px-4 py-3 title-font  font-medium text-gray-900  bg-gray-100">Deadline</th>
+                <th width="15%" class="px-4 py-3 title-font  font-medium text-gray-900  bg-gray-100">Grade Awarded</th>
+                <th width="10%" class="px-4 py-3 title-font  font-medium text-gray-900  bg-gray-100">Feedback</th>
+                <th width="15%" class="px-4 py-3 title-font font-medium text-gray-900 bg-gray-100">Evaluation</th>
+            </tr>
+        </tbody>
+    </table>
+    {% for item in submission_objects %}
+    <table>
+        <tr>
+            <td width="15%" class="px-4 py-3">{{ item.student_name }}</td>
+            <td width="15%" class="px-4 py-3"><a href="{% url 'coursemanager:media' file=item.submission_file %}"target="_blank">View Submission</a></td>
+            <td width="10%" class="px-4 py-3 ">{{ item.submission_time }}</td>
+            <td width="20%" class="px-4 py-3 ">{{ assignment_object.deadline }}</td>
+            {% if item.is_graded %}
+                <td width="15%" class="px-4 py-3 ">{{ item.marks }}/{{ assignment_object.max_marks }} </td>
+                <td width="10%" class="px-4 py-3 ">{{ item.feedback }} </td>
+                <td width="15%" class="px-4 py-3 "><a href="{% url 'coursemanager:evaluate-assignment' pk1=assignment_object.pk pk2=item.pk %}">Edit Grade</a></td>
+            {% else %}
+                <td width="15%" class="px-4 py-3 ">Not Graded</td>
+                <td width="10%" class="px-4 py-3 ">Not Given</td>
+                <td width="15%" class="px-4 py-3 "><a href="{% url 'coursemanager:evaluate-assignment' pk1=assignment_object.pk pk2=item.pk %}">Evaluate</a></td>
+            {% endif %}
+        </tr>
+    </table>
+    {% endfor %}
+</body>
+</html>
