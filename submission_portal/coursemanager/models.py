@@ -34,7 +34,7 @@ class SubmittedAssignment(models.Model):
     roll_number = models.CharField('Roll Number', max_length=256, null=True, blank=True)
     submission_file = models.FileField('Assignment File', upload_to=submission_upload_file_name, storage=OverwriteStorage(), null=True, blank=True)
     submitted_assignment_name = models.CharField('Submitted To', max_length=256, null=True, blank=True)
-    submitted_assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+    submitted_assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=True, blank=True)
     is_graded = models.BooleanField(default=False)
     marks = models.IntegerField('Marks Obtained', null=True, blank=True)
     feedback = models.CharField('Feedback', max_length=1024, null=True, blank=True)

@@ -39,7 +39,7 @@
         <tr>
             <td width="20%" class="px-4 py-3">{{ assignment.assignment_name }}</td>
             <td width="20%" class="px-4 py-3">{{ assignment.description }}</td>
-            <td width="20%" class="px-4 py-3"><a href="{% url 'coursemanager:media' path='assignments/' %}">View Assignment</a></td>
+            <td width="20%" class="px-4 py-3"><a href="{% url 'coursemanager:media' path=assignment.assignment_file %}">View Assignment</a></td>
             <td width="20%" class="px-4 py-3 ">{{ assignment.deadline }}</td>
             {% if submit_array %}
                 <td width="20%" class="px-4 py-3 ">Submitted</td>

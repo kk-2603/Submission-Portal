@@ -44,7 +44,7 @@ class SubmissionForm(ModelForm):
             'student_name',
             'roll_number',
             'submission_file',
-            'submitted_assignment',
+            'submitted_assignment_name',
         ]
 
         widgets = {
@@ -58,7 +58,7 @@ class SubmissionForm(ModelForm):
                 'id': 'roll_num'
                 }),
 
-            'submitted_assignment': TextInput(attrs={
+            'submitted_assignment_name': TextInput(attrs={
                 'class': "form-control",
                 'id': 'sa'
                 }),
